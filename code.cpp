@@ -5,7 +5,7 @@ int main()
 	Graph g = Graph(webNotredame);
 	PageRankEstimatorOMP pre = PageRankEstimatorOMP(g);
 	double time1 = omp_get_wtime();
-	pre.RunPageRankEstimator(2, 10, 0.5, 1);
+	pre.RunPageRankEstimator(8, 10, 0.2, 1);
 	cout << omp_get_wtime() - time1 <<endl;
 	//tuple<int,int>* values = pre.getTop5();
 	//cout << get<0>(values[0]) << ":" << (get<1>(values[0])) << ":" << (get<1>(values[0])) / static_cast<double>(pre.totalWalks) << endl;
