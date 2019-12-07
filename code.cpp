@@ -25,24 +25,23 @@ int main(int argc, char* argv[])
 	int k = std::atoi(argv[2]);
 	double d = std::stod(argv[3]);
 	ofstream myfile;
-	{ webBerkstan, webGoogle, webNotredame, facebookCombined };
 	switch (x)
 	{
 	case 0:
-		myfile << "webBerkstan" << "," << k << "," << d << endl;
 		myfile.open("berk.csv", ofstream::app);
+		myfile << "webBerkstan" << "," << k << "," << d << endl;
 		break;
 	case 1:
-		myfile << "webGoogle" << "," << k << "," << d << endl;
 		myfile.open("google.csv", ofstream::app);
+		myfile << "webGoogle" << "," << k << "," << d << endl;
 		break;
 	case 2:
-		myfile << "webNotreDame" << "," << k << "," << d << endl;
 		myfile.open("notre.csv", ofstream::app);
+		myfile << "webNotreDame" << "," << k << "," << d << endl;
 		break;
 	case 3:
-		myfile << "webFacebookeCombined" << "," << k << "," << d << endl;
 		myfile.open("facebook.csv", ofstream::app);
+		myfile << "webFacebookeCombined" << "," << k << "," << d << endl;
 		break;
 	}
 	myfile << FileType(x) << endl;
