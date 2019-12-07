@@ -10,19 +10,21 @@ class PageRankEstimatorOMP
 {
 public:
 	PageRankEstimatorOMP(Graph g);
-	void RunPageRankEstimator(int threads, int k, int damping, int backDampening);
+	void RunPageRankEstimator(int threads, int k, double damping, double backDampening);
 	int* counts;
 	int countsSize;
 	int totalWalks;
 	tuple<int,int>* getTop5();
+	void ResetCounts();
+	~PageRankEstimatorOMP();
 private:
 	Graph graph;
 	void print(int val);
 	void print(double val);
 	void print(string val);
 	void print(size_t val);
-	int getTailsNextLocation(int targetId, stack<int> prevLocations, drand48_data* randBuffer);
-	int getHeadsNextLocation(int targetId, stack<int> prevLocations, drand48_data* randBuffer);
+	int getTailsNextLocation(int targetId, stack<int> prevLocations, drand48_data* randBuffer, double backDampening);
+	int getHeadsNextLocation(int targetId, stack<int> prevLocations, drand48_data* randBuffer); 
 	tuple<int, int>* getTop5(int* unordered, int size);
 };
 

@@ -19,6 +19,24 @@ void Graph::toggleGraphLocation(int row, int column)
 		return;
 	get<1>(graph[row]).insert(column);
 	get<0>(graph[row]).push_back(column);
+
+	if (graph.find(column) == graph.end())
+		graph[column] = tuple < vector<int>, unordered_set<int>>();
+}
+
+int Graph::getMaxOutgoingEdgesFromNode()
+{
+	unsigned int max = 0;
+	int maxId = -1;
+	for (int x: nodes)
+	{
+		if (get<0>(graph[x]).size() > max)
+		{
+			max = get<0>(graph[x]).size();
+			maxId = x;
+		}
+	}
+	return maxId;
 }
 
 bool Graph::IsEdgeInGraph(int from, int to)

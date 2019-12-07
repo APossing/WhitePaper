@@ -28,6 +28,7 @@ public:
 	unordered_map<int, tuple<vector<int>, unordered_set<int> >> graph;
 	int size;
 	void toggleGraphLocation(int row, int column);
+	int getMaxOutgoingEdgesFromNode();
 private:
 	void initGraph(int size);
 	void loadWebGoogle(string fileName);

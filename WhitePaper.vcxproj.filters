@@ -38,5 +38,6 @@
     <Text Include="Data\web-BerkStan_sorted.txt" />
     <Text Include="Data\web-Google_sorted.txt" />
     <Text Include="Data\web-NotreDame_sorted.txt" />
+    <Text Include="stats.txt" />
   </ItemGroup>
 </Project>
