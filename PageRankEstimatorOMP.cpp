@@ -1,31 +1,20 @@
 #include "PageRankEstimatorOMP.h"
 #include <ctime>
 bool isHardDebug = false;
-PageRankEstimatorOMP::PageRankEstimatorOMP(Graph g)
+PageRankEstimatorOMP::PageRankEstimatorOMP(Graph* g)
 {
 	this->graph = g;
-	countsSize = g.max;
+	countsSize = g->max;
 	totalWalks = 0;
-	counts = new int[graph.max]{ 0 };
-}
-
-void PageRankEstimatorOMP::ResetCounts()
-{
-	counts = new int[graph.max]{ 0 };
-	countsSize = graph.max;
-}
-
-PageRankEstimatorOMP::~PageRankEstimatorOMP()
-{
-	//free(counts);
+	counts = (int*)calloc(graph->max, sizeof(int));
 }
 
 void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double damping, double backDampening)
 {
 	omp_set_dynamic(0);     // disable dynamic teams
 	omp_set_num_threads(threads); // Use p threads for all consecutive parallel regions
-
-	cout << graph.nodes.size() << endl;
+	//ResetCounts();
+	cout << graph->nodes.size() << endl;
 
 	drand48_data* randBuffer = new struct drand48_data[threads]();
 	srand48((unsigned int)time(NULL));
@@ -33,7 +22,7 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 	int myTotalWalks = 0;
 	
 #pragma omp parallel for schedule(static) reduction(+: myTotalWalks) 
-	for (int i = 0; i < graph.nodes.size(); i++)
+	for (int i = 0; i < graph->nodes.size(); i++)
 	{
 		double value;
 		myTotalWalks++;
@@ -45,7 +34,7 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 		for (int j = 0; j < k; j++)
 		{
 			srand48_r(time(NULL) + i, randBuffer + omp_get_thread_num());
-			if (graph.nodesMap.find(nodeTarget) != graph.nodesMap.end())
+			if (graph->nodesMap.find(nodeTarget) != graph->nodesMap.end())
 			{
 				#pragma omp atomic
 				counts[nodeTarget]++;
@@ -67,7 +56,7 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 		}
 		//for (auto it = values.begin(); it != values.end(); ++it)
 		//{
-		//	if ((*it).first < graph.max)
+		//	if ((*it).first < graph->max)
 		//	{
 		//		#pragma omp atomic
 		//		counts[(*it).first] += (*it).second;
@@ -81,9 +70,9 @@ int PageRankEstimatorOMP::getHeadsNextLocation(int nodeTarget, stack<int> prevLo
 {
 	double value;
 	drand48_r(randBuffer, &value);
-	int count = graph.nodes.size();
+	int count = graph->nodes.size();
 	prevLocations.push(nodeTarget);
-	nodeTarget = graph.nodes[(((int)(count * value) + 1) % (count))];
+	nodeTarget = graph->nodes[(((int)(count * value) + 1) % (count))];
 	return nodeTarget;
 }
 
@@ -91,7 +80,7 @@ int PageRankEstimatorOMP::getTailsNextLocation(int nodeTarget, stack<int> prevLo
 {
 	double value;
 	drand48_r(randBuffer, &value);
-	int size = get<0>(graph.graph[nodeTarget]).size();
+	int size = get<0>(graph->graph[nodeTarget]).size();
 	int count = size;
 	if (backDampening < 1.0)
 		count += count*backDampening;
@@ -116,7 +105,7 @@ int PageRankEstimatorOMP::getTailsNextLocation(int nodeTarget, stack<int> prevLo
 	else
 	{
 		prevLocations.push(nodeTarget);
-		nodeTarget = get<0>(graph.graph[nodeTarget])[selected]; //getHeadsNextLocation(nodeTarget, prevLocations, randBuffer);//get<0>(graph.graph[nodeTarget])[selected];
+		nodeTarget = get<0>(graph->graph[nodeTarget])[selected]; //getHeadsNextLocation(nodeTarget, prevLocations, randBuffer);//get<0>(graph->graph[nodeTarget])[selected];
 	}
 	return nodeTarget;
 }

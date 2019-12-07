@@ -2,9 +2,9 @@
 #define hello
 #include "graph.h"
 
-void Graph::initGraph(int size)
+void Graph::initGraph()
 {
-	this->size = size;
+	//this->size = size;
 	this->max = 0;
 	this->nodesMap = unordered_set<int>();
 	this->links = list<tuple<int, int>>(links);
@@ -72,7 +72,7 @@ void Graph::loadWebGoogle(string fileName)
 	}
 
 
-	initGraph(size);
+	initGraph();
 	getline(inFile, line);
 	int words[2];
 	int k = 0;
@@ -140,7 +140,7 @@ void Graph::loadwebNotreDame(string fileName)
 	}
 
 
-	initGraph(size);
+	initGraph();
 	getline(inFile, line);
 	int words[2];
 	int k = 0;
@@ -210,7 +210,7 @@ void Graph::loadwebBerkStan(string fileName)
 	}
 	cout << "size:" << size << endl;
 
-	initGraph(size);
+	initGraph();
 	int words[2];
 	int k = 0;
 	while (getline(inFile, line))
@@ -260,9 +260,10 @@ void Graph::loadFacebookWebCombined(string fileName)
 	inFile.open(fileName, std::ios::out);
 	string line;
 	
-	initGraph(0);
+	initGraph();
 	int words[2];
 	int k = 0;
+	int count = 0;
 	while (getline(inFile, line))
 	{
 		if (k++ % 10000 == 0)
@@ -285,6 +286,7 @@ void Graph::loadFacebookWebCombined(string fileName)
 
 		if (nodesMap.find(words[1]) == nodesMap.end())
 		{
+			count++;
 			nodesMap.insert(words[1]);
 			this->nodes.push_back(words[1]);
 			if (words[1] > this->max)
@@ -292,6 +294,7 @@ void Graph::loadFacebookWebCombined(string fileName)
 		}
 		if (nodesMap.find(words[0]) == nodesMap.end())
 		{
+			count++;
 			nodesMap.insert(words[0]);
 			this->nodes.push_back(words[0]);
 			if (words[0] > this->max)
@@ -300,7 +303,7 @@ void Graph::loadFacebookWebCombined(string fileName)
 
 		toggleGraphLocation(words[0], words[1]);
 	}
-	size = nodes.size();
+	//this->size = count-1;
 	cout << "size:" << nodes.size() << endl;
 	inFile.close();
 }
@@ -355,18 +358,19 @@ Graph::Graph(FileType fileType)
 	}
 }
 
-Graph::Graph(const Graph& g)
-{
-	this->graph = g.graph;
-	this->nodes = g.nodes;
-	this->nodesMap = g.nodesMap;
-	this->size = g.size;
-	this->max = g.max;
-}
+//Graph::Graph(const Graph& g)
+//{
+//	this->graph = g.graph;
+//	this->nodes = g.nodes;
+//	this->nodesMap = g.nodesMap;
+//	//this->size = g.size;
+//	this->max = g.max;
+//	this->links = g.links;
+//}
 
 Graph::Graph()
 {
-	initGraph(0);
+	initGraph();
 }
 
 #endif

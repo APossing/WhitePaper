@@ -9,16 +9,14 @@
 class PageRankEstimatorOMP
 {
 public:
-	PageRankEstimatorOMP(Graph g);
+	PageRankEstimatorOMP(Graph *g);
 	void RunPageRankEstimator(int threads, int k, double damping, double backDampening);
 	int* counts;
 	int countsSize;
 	int totalWalks;
 	tuple<int,int>* getTop5();
-	void ResetCounts();
-	~PageRankEstimatorOMP();
 private:
-	Graph graph;
+	Graph *graph;
 	void print(int val);
 	void print(double val);
 	void print(string val);
