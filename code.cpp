@@ -24,7 +24,12 @@ int main()
 		time1 = omp_get_wtime();
 		pre.RunPageRankEstimator(i, 10, 0.05, 1);
 		myfile << i << ',' << omp_get_wtime() - time1 << endl;
-		printTop5(&myfile, pre);
+		tuple<int, int>* values = pre.getTop5();
+		(myfile) << get<0>(values[0]) << "," << (get<1>(values[0])) << "," << (get<1>(values[0])) / static_cast<double>(pre.totalWalks);
+		(myfile) << get<0>(values[1]) << "," << (get<1>(values[1])) << "," << (get<1>(values[1])) / static_cast<double>(pre.totalWalks);
+		(myfile) << get<0>(values[2]) << "," << (get<1>(values[2])) << "," << (get<1>(values[2])) / static_cast<double>(pre.totalWalks);
+		(myfile) << get<0>(values[3]) << "," << (get<1>(values[3])) << "," << (get<1>(values[3])) / static_cast<double>(pre.totalWalks);
+		(myfile) << get<0>(values[4]) << "," << (get<1>(values[4])) << "," << (get<1>(values[4])) / static_cast<double>(pre.totalWalks) << endl;
 	}
 
 	g = Graph(webGoogle);
@@ -35,7 +40,12 @@ int main()
 		time1 = omp_get_wtime();
 		pre.RunPageRankEstimator(i, 100, 0.05, 1);
 		myfile << omp_get_wtime() - time1 << endl;
-		printTop5(&myfile, pre);
+		tuple<int, int>* values = pre.getTop5();
+		(myfile) << get<0>(values[0]) << "," << (get<1>(values[0])) << "," << (get<1>(values[0])) / static_cast<double>(pre.totalWalks);
+		(myfile) << get<0>(values[1]) << "," << (get<1>(values[1])) << "," << (get<1>(values[1])) / static_cast<double>(pre.totalWalks);
+		(myfile) << get<0>(values[2]) << "," << (get<1>(values[2])) << "," << (get<1>(values[2])) / static_cast<double>(pre.totalWalks);
+		(myfile) << get<0>(values[3]) << "," << (get<1>(values[3])) << "," << (get<1>(values[3])) / static_cast<double>(pre.totalWalks);
+		(myfile) << get<0>(values[4]) << "," << (get<1>(values[4])) << "," << (get<1>(values[4])) / static_cast<double>(pre.totalWalks) << endl;
 	}
 
 
