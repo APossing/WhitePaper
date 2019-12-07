@@ -10,7 +10,7 @@ PageRankEstimatorOMP::PageRankEstimatorOMP(Graph* graph)
 
 void PageRankEstimatorOMP::ResetCounts(Graph* graph)
 {
-	counts = new int[graph->max]{ 0 };
+	counts = new int[graph->max+5]{ 0 };
 	countsSize = graph->max;
 }
 
