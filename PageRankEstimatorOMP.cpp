@@ -30,7 +30,7 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 	for (int i = 0; i < graph.nodes.size(); i++)
 	{
 		double value;
-		totalWalks++;
+		myTotalWalks++;
 		if (i % 10000 == 0)
 			cout << i << endl;
 		int nodeTarget = i;
@@ -42,7 +42,7 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 			if (graph.nodesMap.find(nodeTarget) != graph.nodesMap.end())
 			{
 				#pragma omp atomic
-				counts[nodeTarget] ++;
+				counts[nodeTarget]++;
 
 				//if (values.find(nodeTarget) == values.end())
 				//	values[nodeTarget] = 1;
@@ -122,7 +122,7 @@ tuple<int, int>* PageRankEstimatorOMP::getTop5()
 
 PageRankEstimatorOMP::~PageRankEstimatorOMP()
 {
-	delete counts;
+	free(counts);
 }
 
 void PageRankEstimatorOMP::print(int val)
