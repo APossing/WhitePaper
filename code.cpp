@@ -22,7 +22,7 @@ int main()
 	for (int i = 1; i <= 8; i *= 2)
 	{
 		time1 = omp_get_wtime();
-		pre.RunPageRankEstimator(i, 1000, 0.05, 1);
+		pre.RunPageRankEstimator(i, 10, 0.05, 1);
 		myfile << i << ',' << omp_get_wtime() - time1 << endl;
 		printTop5(&myfile, pre);
 	}
@@ -33,7 +33,7 @@ int main()
 	for (int i = 1; i <= 8; i *= 2)
 	{
 		time1 = omp_get_wtime();
-		pre.RunPageRankEstimator(i, 10000, 0.05, 1);
+		pre.RunPageRankEstimator(i, 100, 0.05, 1);
 		myfile << omp_get_wtime() - time1 << endl;
 		printTop5(&myfile, pre);
 	}

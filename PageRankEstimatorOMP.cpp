@@ -23,7 +23,10 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 
 	drand48_data* randBuffer = new struct drand48_data[threads]();
 	srand48((unsigned int)time(NULL));
-#pragma omp parallel for schedule(static) reduction(+: totalWalks) 
+
+	int myTotalWalks = 0;
+	
+#pragma omp parallel for schedule(static) reduction(+: myTotalWalks) 
 	for (int i = 0; i < graph.nodes.size(); i++)
 	{
 		double value;
@@ -31,17 +34,20 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 		if (i % 10000 == 0)
 			cout << i << endl;
 		int nodeTarget = i;
-		unordered_map<int, int> values = unordered_map<int, int>();
+		//unordered_map<int, int> values = unordered_map<int, int>();
 		stack<int> prevLocations = stack<int>();
 		for (int j = 0; j < k; j++)
 		{
 			srand48_r(time(NULL) + i, randBuffer + omp_get_thread_num());
 			if (graph.nodesMap.find(nodeTarget) != graph.nodesMap.end())
 			{
-				if (values.find(nodeTarget) == values.end())
-					values[nodeTarget] = 1;
-				else
-					values[nodeTarget]++;
+				#pragma omp atomic
+				counts[nodeTarget] ++;
+
+				//if (values.find(nodeTarget) == values.end())
+				//	values[nodeTarget] = 1;
+				//else
+				//	values[nodeTarget]++;
 				drand48_r(randBuffer + omp_get_thread_num(), &value); // todo fix buffer location
 				if (value > damping)
 				{
@@ -53,15 +59,16 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 				}
 			}
 		}
-		for (auto it = values.begin(); it != values.end(); ++it)
-		{
-			if ((*it).first < graph.max)
-			{
-				#pragma omp atomic
-				counts[(*it).first] += (*it).second;
-			}
-		}
+		//for (auto it = values.begin(); it != values.end(); ++it)
+		//{
+		//	if ((*it).first < graph.max)
+		//	{
+		//		#pragma omp atomic
+		//		counts[(*it).first] += (*it).second;
+		//	}
+		//}
 	}
+	totalWalks = myTotalWalks;
 }
 
 int PageRankEstimatorOMP::getHeadsNextLocation(int nodeTarget, stack<int> prevLocations, drand48_data* randBuffer)
