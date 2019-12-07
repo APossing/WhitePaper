@@ -1,14 +1,14 @@
 #include "graph.h"
 #include "PageRankEstimatorOMP.h"
 
-void runSpeedupTests(ofstream* myfile, PageRankEstimatorOMP pre)
+void runSpeedupTests(ofstream* myfile, PageRankEstimatorOMP pre, Graph* g)
 {
 	double time1;
 	for (int i = 1; i <= 8; i *= 2)
 	{
-		pre.ResetCounts();
+		pre.ResetCounts(g);
 		time1 = omp_get_wtime();
-		pre.RunPageRankEstimator(i, 10, 0.05, 1);
+		pre.RunPageRankEstimator(i, 10, 0.05, 1,g);
 		*myfile << i << ',' << omp_get_wtime() - time1 << endl;
 		tuple<int, int>* values = pre.getTop5();
 		(*myfile) << get<0>(values[0]) << "," << (get<1>(values[0])) << "," << (get<1>(values[0])) / static_cast<double>(pre.totalWalks);
@@ -19,21 +19,21 @@ void runSpeedupTests(ofstream* myfile, PageRankEstimatorOMP pre)
 	}
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 
+	std::string arg = argv[1];
+	std::size_t pos;
+	int x = std::stoi(arg, &pos);
 	ofstream myfile;
-	myfile.open("stats.csv");
+	myfile.open("stats.csv", ofstream::app);
 
-	for (int i = 0; i < 4; i++)
-	{
-		Graph g1 = Graph(FileType(i));
-		myfile << FileType(i) << endl;
-		PageRankEstimatorOMP pre1 = PageRankEstimatorOMP(g1);
-		cout << "running speedupTests" << endl;
-		runSpeedupTests(&myfile, pre1);
-		cout << "complete" << endl;
-	}
+	Graph g1 = Graph(FileType(x));
+	myfile << FileType(x) << endl;
+	PageRankEstimatorOMP pre1 = PageRankEstimatorOMP(&g1);
+	cout << "running speedupTests" << endl;
+	runSpeedupTests(&myfile, pre1, &g1);
+	cout << "complete" << endl;
 
 	//
 	//Graph g2 = Graph(facebookCombined);
