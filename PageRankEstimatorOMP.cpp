@@ -36,7 +36,7 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 	{
 		double value;
 		myTotalWalks++;
-		if (i % 10000 == 0 || i > 685000)
+		if (i % 10000 == 0)
 			cout << i << endl;
 		int nodeTarget = i;
 		//unordered_map<int, int> values = unordered_map<int, int>();
