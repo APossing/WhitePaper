@@ -6,6 +6,7 @@ void runSpeedupTests(ofstream* myfile, PageRankEstimatorOMP pre)
 	double time1;
 	for (int i = 1; i <= 8; i *= 2)
 	{
+		pre.ResetCounts();
 		time1 = omp_get_wtime();
 		pre.RunPageRankEstimator(i, 10, 0.05, 1);
 		*myfile << i << ',' << omp_get_wtime() - time1 << endl;
@@ -23,16 +24,34 @@ int main()
 
 	ofstream myfile;
 	myfile.open("stats.csv");
-	
-	Graph g = Graph(webNotredame);
-	myfile << "webNotreDame" << endl;
-	PageRankEstimatorOMP pre = PageRankEstimatorOMP(g);
-	runSpeedupTests(&myfile, pre);
 
-	g = Graph(webGoogle);
-	pre = PageRankEstimatorOMP(g);
-	myfile << "webGoogle" << endl;
-	runSpeedupTests(&myfile, pre);
+	for (int i = 0; i < 4; i++)
+	{
+		Graph g1 = Graph(FileType(i));
+		myfile << FileType(i) << endl;
+		PageRankEstimatorOMP pre1 = PageRankEstimatorOMP(g1);
+		cout << "running speedupTests" << endl;
+		runSpeedupTests(&myfile, pre1);
+		cout << "complete" << endl;
+	}
+
+	//
+	//Graph g2 = Graph(facebookCombined);
+	//PageRankEstimatorOMP pre2 = PageRankEstimatorOMP(g2);
+	//myfile << "Facebook" << endl;
+	//runSpeedupTests(&myfile, pre2);
+
+	//Graph g3 = Graph(webBerkstan);
+	//PageRankEstimatorOMP pre3 = PageRankEstimatorOMP(g3);
+	//myfile << "berkStan" << endl;
+	//runSpeedupTests(&myfile, pre3);
+
+	//Graph g4 = Graph(webGoogle);
+	//PageRankEstimatorOMP pre4 = PageRankEstimatorOMP(g4);
+	//myfile << "webGoogle" << endl;
+	//runSpeedupTests(&myfile, pre4);
+
+
 
 
 

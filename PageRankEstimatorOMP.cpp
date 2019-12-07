@@ -6,12 +6,18 @@ PageRankEstimatorOMP::PageRankEstimatorOMP(Graph g)
 	this->graph = g;
 	countsSize = g.max;
 	totalWalks = 0;
-	ResetCounts();
+	counts = new int[graph.max]{ 0 };
 }
 
 void PageRankEstimatorOMP::ResetCounts()
 {
 	counts = new int[graph.max]{ 0 };
+	countsSize = graph.max;
+}
+
+PageRankEstimatorOMP::~PageRankEstimatorOMP()
+{
+	//free(counts);
 }
 
 void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double damping, double backDampening)
@@ -118,11 +124,6 @@ int PageRankEstimatorOMP::getTailsNextLocation(int nodeTarget, stack<int> prevLo
 tuple<int, int>* PageRankEstimatorOMP::getTop5()
 {
 	return getTop5(counts, countsSize);
-}
-
-PageRankEstimatorOMP::~PageRankEstimatorOMP()
-{
-	free(counts);
 }
 
 void PageRankEstimatorOMP::print(int val)

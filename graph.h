@@ -9,7 +9,7 @@
 #include <vector>
 #include <list>
 using namespace std;
-enum FileType { webGoogle, webBerkstan, webNotredame, facebookCombined };
+enum FileType { webBerkstan, webGoogle, webNotredame, facebookCombined };
 
 class Graph
 {
@@ -33,5 +33,7 @@ private:
 	void initGraph(int size);
 	void loadWebGoogle(string fileName);
 	void loadwebNotreDame(string fileName);
+	void loadwebBerkStan(string fileName);
+	void loadFacebookWebCombined(string filename);
 	void processLinks(int threads);
 };

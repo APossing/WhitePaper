@@ -185,6 +185,126 @@ void Graph::loadwebNotreDame(string fileName)
 	inFile.close();
 }
 
+void Graph::loadwebBerkStan(string fileName)
+{
+	ifstream inFile;
+	inFile.open(fileName, std::ios::out);
+	string line;
+	getline(inFile, line);
+	getline(inFile, line);
+	getline(inFile, line);
+	getline(inFile, line);
+	int size = 0;
+	char* cstr = new char[line.length() + 1];
+	strcpy(cstr, line.c_str());
+	char* pch = strtok(cstr, " ");
+	int i = 0;
+	while (pch != NULL)
+	{
+		if (i++ == 2)
+		{
+			size = stoi(pch);
+			break;
+		}
+		pch = strtok(NULL, " ,.-");
+	}
+	cout << "size:" << size << endl;
+
+	initGraph(size);
+	int words[2];
+	int k = 0;
+	while (getline(inFile, line))
+	{
+		if (k++ % 10000 == 0 || k > 7600001)
+			cout << k << endl;
+		int j = 0;
+		string word;
+		for (auto x : line)
+		{
+			if (x == '\t')
+			{
+				words[j] = stoi(word);
+				word = "";
+			}
+			else
+			{
+				word += x;
+			}
+		}
+		words[1] = stoi(word);
+
+		if (nodesMap.find(words[1]) == nodesMap.end())
+		{
+			nodesMap.insert(words[1]);
+			this->nodes.push_back(words[1]);
+			if (words[1] > this->max)
+				this->max = words[1];
+		}
+		if (nodesMap.find(words[0]) == nodesMap.end())
+		{
+			nodesMap.insert(words[0]);
+			this->nodes.push_back(words[0]);
+			if (words[0] > this->max)
+				this->max = words[0];
+		}
+
+		toggleGraphLocation(words[0], words[1]);
+	}
+
+	inFile.close();
+}
+
+void Graph::loadFacebookWebCombined(string fileName)
+{
+	ifstream inFile;
+	inFile.open(fileName, std::ios::out);
+	string line;
+	
+	initGraph(0);
+	int words[2];
+	int k = 0;
+	while (getline(inFile, line))
+	{
+		if (k++ % 10000 == 0)
+			cout << k << endl;
+		int j = 0;
+		string word;
+		for (auto x : line)
+		{
+			if (x == ' ')
+			{
+				words[j] = stoi(word);
+				word = "";
+			}
+			else
+			{
+				word += x;
+			}
+		}
+		words[1] = stoi(word);
+
+		if (nodesMap.find(words[1]) == nodesMap.end())
+		{
+			nodesMap.insert(words[1]);
+			this->nodes.push_back(words[1]);
+			if (words[1] > this->max)
+				this->max = words[1];
+		}
+		if (nodesMap.find(words[0]) == nodesMap.end())
+		{
+			nodesMap.insert(words[0]);
+			this->nodes.push_back(words[0]);
+			if (words[0] > this->max)
+				this->max = words[0];
+		}
+
+		toggleGraphLocation(words[0], words[1]);
+	}
+	size = nodes.size();
+	cout << "size:" << nodes.size() << endl;
+	inFile.close();
+}
+
 void Graph::processLinks(int threads)
 {
 	for(auto x: links)
@@ -222,11 +342,13 @@ Graph::Graph(FileType fileType)
 		loadWebGoogle("Data/web-Google_sorted.txt");
 		break;
 	case webBerkstan:
+		loadwebBerkStan("Data/web-BerkStan_sorted.txt");
 		break;
 	case webNotredame:
 		loadwebNotreDame("Data/web-NotreDame_sorted.txt");
 		break;
 	case facebookCombined:
+		loadFacebookWebCombined("Data/facebook_combined.txt");
 		break;
 	default:
 		break;
