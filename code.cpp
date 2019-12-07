@@ -1,14 +1,14 @@
 #include "graph.h"
 #include "PageRankEstimatorOMP.h"
 
-void runSpeedupTests(ofstream* myfile, PageRankEstimatorOMP pre, Graph* g)
+void runSpeedupTests(ofstream* myfile, PageRankEstimatorOMP pre, Graph* g, int k, double d)
 {
 	double time1;
 	for (int i = 1; i <= 8; i *= 2)
 	{
 		pre.ResetCounts(g);
 		time1 = omp_get_wtime();
-		pre.RunPageRankEstimator(i, 10, 0.05, 1,g);
+		pre.RunPageRankEstimator(i, k, d, 1, g);
 		*myfile << i << ',' << omp_get_wtime() - time1 << endl;
 		tuple<int, int>* values = pre.getTop5();
 		(*myfile) << get<0>(values[0]) << "," << (get<1>(values[0])) << "," << (get<1>(values[0])) / static_cast<double>(pre.totalWalks);
@@ -21,18 +21,38 @@ void runSpeedupTests(ofstream* myfile, PageRankEstimatorOMP pre, Graph* g)
 
 int main(int argc, char* argv[])
 {
-
-	std::string arg = argv[1];
-	std::size_t pos;
-	int x = std::stoi(arg, &pos);
+	int x = std::atoi(argv[1]);
+	int k = std::atoi(argv[2]);
+	double d = std::stod(argv[3]);
 	ofstream myfile;
-	myfile.open("stats.csv", ofstream::app);
+	{ webBerkstan, webGoogle, webNotredame, facebookCombined };
+	switch (x)
+	{
+	case 0:
+		myfile << "webBerkstan" << "," << k << "," << d << endl;
+		myfile.open("berk.csv", ofstream::app);
+		break;
+	case 1:
+		myfile << "webGoogle" << "," << k << "," << d << endl;
+		myfile.open("google.csv", ofstream::app);
+		break;
+	case 2:
+		myfile << "webNotreDame" << "," << k << "," << d << endl;
+		myfile.open("notre.csv", ofstream::app);
+		break;
+	case 3:
+		myfile << "webFacebookeCombined" << "," << k << "," << d << endl;
+		myfile.open("facebook.csv", ofstream::app);
+		break;
+	}
+	myfile << FileType(x) << endl;
+
 
 	Graph g1 = Graph(FileType(x));
-	myfile << FileType(x) << endl;
+
 	PageRankEstimatorOMP pre1 = PageRankEstimatorOMP(&g1);
 	cout << "running speedupTests" << endl;
-	runSpeedupTests(&myfile, pre1, &g1);
+	runSpeedupTests(&myfile, pre1, &g1, k, d);
 	cout << "complete" << endl;
 
 	//
