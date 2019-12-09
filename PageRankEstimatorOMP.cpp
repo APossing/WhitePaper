@@ -48,11 +48,7 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 			{
 				#pragma omp atomic
 				counts[nodeTarget]++;
-
-				//if (values.find(nodeTarget) == values.end())
-				//	values[nodeTarget] = 1;
-				//else
-				//	values[nodeTarget]++;
+				
 				drand48_r(randBuffer + omp_get_thread_num(), &value); // todo fix buffer location
 				if (value > damping)
 				{
@@ -64,14 +60,6 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 				}
 			}
 		}
-		//for (auto it = values.begin(); it != values.end(); ++it)
-		//{
-		//	if ((*it).first < graph->max)
-		//	{
-		//		#pragma omp atomic
-		//		counts[(*it).first] += (*it).second;
-		//	}
-		//}
 	}
 	totalWalks = myTotalWalks;
 }

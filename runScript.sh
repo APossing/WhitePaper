@@ -1,4 +1,3 @@
-#!/bin/sh
 mpicxx -std=c++11 -o out -fopenmp code.cpp graph.cpp PageRankEstimatorOMP.cpp -lm
 for j in 64 128 512 1024 2048 4096 8192 16384
 do
@@ -13,4 +12,5 @@ do
 	do
 		./out ${i} 100 ${j}
 	done
+do
 rm out
