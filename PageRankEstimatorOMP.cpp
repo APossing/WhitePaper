@@ -1,19 +1,31 @@
 #include "PageRankEstimatorOMP.h"
 #include <ctime>
 bool isHardDebug = false;
-PageRankEstimatorOMP::PageRankEstimatorOMP(Graph* g)
+PageRankEstimatorOMP::PageRankEstimatorOMP(Graph* graph)
 {
-	this->graph = g;
-	countsSize = g->max;
+	countsSize = graph->max;
 	totalWalks = 0;
-	counts = (int*)calloc(graph->max, sizeof(int));
+	counts = new int[graph->max+5]{ 0 };
 }
 
-void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double damping, double backDampening)
+void PageRankEstimatorOMP::ResetCounts(Graph* graph)
+{
+	counts = new int[graph->max+5]{ 0 };
+	countsSize = graph->max;
+}
+
+PageRankEstimatorOMP::~PageRankEstimatorOMP()
+{
+	//free(counts);
+}
+
+void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double damping, double backDampening, Graph* graph)
 {
 	omp_set_dynamic(0);     // disable dynamic teams
 	omp_set_num_threads(threads); // Use p threads for all consecutive parallel regions
 	//ResetCounts();
+	cout << graph->nodes.size() << endl;
+
 	cout << graph->nodes.size() << endl;
 
 	drand48_data* randBuffer = new struct drand48_data[threads]();
@@ -22,7 +34,7 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 	int myTotalWalks = 0;
 	
 #pragma omp parallel for schedule(static) reduction(+: myTotalWalks) 
-	for (int i = 0; i < graph->nodes.size(); i++)
+	for (int i = 0; i < graph->max; i++)
 	{
 		double value;
 		myTotalWalks++;
@@ -38,35 +50,23 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 			{
 				#pragma omp atomic
 				counts[nodeTarget]++;
-
-				//if (values.find(nodeTarget) == values.end())
-				//	values[nodeTarget] = 1;
-				//else
-				//	values[nodeTarget]++;
+				
 				drand48_r(randBuffer + omp_get_thread_num(), &value); // todo fix buffer location
 				if (value > damping)
 				{
-					nodeTarget = getTailsNextLocation(nodeTarget, prevLocations, randBuffer + omp_get_thread_num(), backDampening);
+					nodeTarget = getTailsNextLocation(nodeTarget, prevLocations, randBuffer + omp_get_thread_num(), backDampening, graph);
 				}
 				else
 				{
-					nodeTarget = getHeadsNextLocation(nodeTarget, prevLocations, randBuffer + omp_get_thread_num());
+					nodeTarget = getHeadsNextLocation(nodeTarget, prevLocations, randBuffer + omp_get_thread_num(), graph);
 				}
 			}
 		}
-		//for (auto it = values.begin(); it != values.end(); ++it)
-		//{
-		//	if ((*it).first < graph->max)
-		//	{
-		//		#pragma omp atomic
-		//		counts[(*it).first] += (*it).second;
-		//	}
-		//}
 	}
 	totalWalks = myTotalWalks;
 }
 
-int PageRankEstimatorOMP::getHeadsNextLocation(int nodeTarget, stack<int> prevLocations, drand48_data* randBuffer)
+int PageRankEstimatorOMP::getHeadsNextLocation(int nodeTarget, stack<int> prevLocations, drand48_data* randBuffer, Graph* graph)
 {
 	double value;
 	drand48_r(randBuffer, &value);
@@ -76,7 +76,7 @@ int PageRankEstimatorOMP::getHeadsNextLocation(int nodeTarget, stack<int> prevLo
 	return nodeTarget;
 }
 
-int PageRankEstimatorOMP::getTailsNextLocation(int nodeTarget, stack<int> prevLocations, drand48_data* randBuffer, double backDampening)
+int PageRankEstimatorOMP::getTailsNextLocation(int nodeTarget, stack<int> prevLocations, drand48_data* randBuffer, double backDampening, Graph* graph)
 {
 	double value;
 	drand48_r(randBuffer, &value);
@@ -94,7 +94,7 @@ int PageRankEstimatorOMP::getTailsNextLocation(int nodeTarget, stack<int> prevLo
 	{
 		if (prevLocations.size() == 0)
 		{
-			return getHeadsNextLocation(nodeTarget, prevLocations, randBuffer);
+			return getHeadsNextLocation(nodeTarget, prevLocations, randBuffer, graph);
 		}
 		else
 		{
@@ -144,20 +144,6 @@ tuple<int, int>* PageRankEstimatorOMP::getTop5(int* unordered, int size)
 	tuple<int, int>* top5 = new tuple<int, int>[5]{ tuple<int,int>(-1,-1),tuple<int,int>(-1,-1),tuple<int,int>(-1,-1),tuple<int,int>(-1,-1),tuple<int,int>(-1,-1) };
 	for (int i = 0; i < size; i++)
 	{
-		//for (int j = 0; j < 5; j++)
-		//{
-		//	if (unordered[i] >= get<1>(top5[i]))
-		//	{
-		//		int val = j;
-		//		while (j < 4)
-		//		{
-		//			unordered[j + 1] = unordered[j];
-		//			j++;
-		//		}
-		//		top5[val] = tuple<int, int>(i, unordered[i]);
-		//		j++;
-		//	}
-		//}
 		if (unordered[i] >= get<1>(top5[0]))
 		{
 			top5[4] = top5[3];
