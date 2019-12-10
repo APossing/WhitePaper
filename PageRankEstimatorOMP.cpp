@@ -23,6 +23,8 @@ void PageRankEstimatorOMP::RunPageRankEstimator(int threads, int k, double dampi
 {
 	omp_set_dynamic(0);     // disable dynamic teams
 	omp_set_num_threads(threads); // Use p threads for all consecutive parallel regions
+	//ResetCounts();
+	cout << graph->nodes.size() << endl;
 
 	cout << graph->nodes.size() << endl;
 

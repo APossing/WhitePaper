@@ -9,7 +9,7 @@
 #include <vector>
 #include <list>
 using namespace std;
-enum FileType { webBerkstan, webGoogle, webNotredame, facebookCombined };
+enum FileType { facebookCombined, webBerkstan, webGoogle, webNotredame,  };
 
 class Graph
 {
@@ -17,7 +17,7 @@ class Graph
 public:
 	Graph(string fileName, FileType fileType);
 	explicit Graph(FileType fileType);
-	Graph(const Graph &g);
+	//Graph(const Graph &g);
 	Graph();
 	int max;
 	vector<int> nodes;
@@ -26,11 +26,11 @@ public:
 	bool IsEdgeInGraph(int from, int to);
 	bool nodeInGraph(int from);
 	unordered_map<int, tuple<vector<int>, unordered_set<int> >> graph;
-	int size;
+	//int size;
 	void toggleGraphLocation(int row, int column);
 	int getMaxOutgoingEdgesFromNode();
 private:
-	void initGraph(int size);
+	void initGraph();
 	void loadWebGoogle(string fileName);
 	void loadwebNotreDame(string fileName);
 	void loadwebBerkStan(string fileName);
