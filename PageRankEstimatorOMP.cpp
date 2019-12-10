@@ -142,20 +142,6 @@ tuple<int, int>* PageRankEstimatorOMP::getTop5(int* unordered, int size)
 	tuple<int, int>* top5 = new tuple<int, int>[5]{ tuple<int,int>(-1,-1),tuple<int,int>(-1,-1),tuple<int,int>(-1,-1),tuple<int,int>(-1,-1),tuple<int,int>(-1,-1) };
 	for (int i = 0; i < size; i++)
 	{
-		//for (int j = 0; j < 5; j++)
-		//{
-		//	if (unordered[i] >= get<1>(top5[i]))
-		//	{
-		//		int val = j;
-		//		while (j < 4)
-		//		{
-		//			unordered[j + 1] = unordered[j];
-		//			j++;
-		//		}
-		//		top5[val] = tuple<int, int>(i, unordered[i]);
-		//		j++;
-		//	}
-		//}
 		if (unordered[i] >= get<1>(top5[0]))
 		{
 			top5[4] = top5[3];

@@ -55,27 +55,6 @@ int main(int argc, char* argv[])
 	cout << "running speedupTests" << endl;
 	runSpeedupTests(&myfile, pre1, &g1, k, d);
 	cout << "complete" << endl;
-
-	//
-	//Graph g2 = Graph(facebookCombined);
-	//PageRankEstimatorOMP pre2 = PageRankEstimatorOMP(g2);
-	//myfile << "Facebook" << endl;
-	//runSpeedupTests(&myfile, pre2);
-
-	//Graph g3 = Graph(webBerkstan);
-	//PageRankEstimatorOMP pre3 = PageRankEstimatorOMP(g3);
-	//myfile << "berkStan" << endl;
-	//runSpeedupTests(&myfile, pre3);
-
-	//Graph g4 = Graph(webGoogle);
-	//PageRankEstimatorOMP pre4 = PageRankEstimatorOMP(g4);
-	//myfile << "webGoogle" << endl;
-	//runSpeedupTests(&myfile, pre4);
-
-
-
-
-
 	return 0;
 }
 

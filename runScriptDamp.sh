@@ -1,6 +1,6 @@
-for j in 0 0.05 0.1 0.15 0.2
+for j in 0.5 
 do
-  for i in 0 1 2 3
+  for i in 2
   do
     ./out ${i} 100 'd' ${j}
   done
